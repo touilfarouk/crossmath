@@ -70,38 +70,9 @@ body {
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.brand { display: flex; align-items: center; gap: 12px; }
-
-.logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 15px;
-  display: grid;
-  place-items: center;
-  font-size: 30px;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(135deg, var(--tile-grad-a), var(--tile-grad-b), var(--accent-3));
-  box-shadow: var(--shadow-soft);
-}
-
-.brand-text h1 {
-  margin: 0;
-  font-size: clamp(20px, 4vw, 30px);
-  color: #fff;
-  letter-spacing: 0.2px;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-}
-
-.tagline {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.82);
 }
 
 .stats {
