@@ -1,8 +1,9 @@
 # Math Crossword 🧮
 
-A free, no-dependency math puzzle game that you can host on **GitHub Pages**.
-Fill the crossword-style grid with numbers so that **every row and every
-column forms a correct equation** — just like the classic Math Crossword.
+A free, no-dependency **multiplication crossword** for practising times tables,
+ready to host on **GitHub Pages**. Fill the grid so that **every row and every
+column forms a correct multiplication equation** — from `3 × 4 = 12` up to
+`9 × 9 = 81`, with longer factor chains on the bigger boards.
 
 > Drag numbers from the tray onto the board (or tap a number, then tap a square).
 
@@ -29,24 +30,28 @@ This game is a full-screen **Progressive Web App**:
 
 ## How to play
 
-- Each **row** and each **column** of the grid is an arithmetic equation.
+- Each **row** and each **column** of the grid is a **multiplication equation**.
 - Solve the equations and **drag the numbers** from the tray into the empty squares.
 - Numbers are shared where rows and columns **cross** — one wrong pick can break two equations.
 - Use **Hint** to reveal a correct number, **Check** to highlight mistakes, and **Clear** to start over.
-- Operators work **left to right** (e.g. `4 × 3 + 2 = 14`), and every equation uses
-  only one operator family (`+ −` or `× ÷`) so the order is never ambiguous.
+- No pluses or minuses — every equation is a single multiplication working
+  **left to right**, like `3 × 4 = 12` (no `+`, `−`, or `÷` anywhere).
 
 ### Levels
 
-| Levels | Board  | Operators          |
-| ------ | ------ | ------------------ |
-| 1 – 4  | 5 × 5  | `+  −  ×`          |
-| 5 – 9  | 7 × 7  | `+  −  ×`          |
-| 10+    | 9 × 9  | `+  −  ×  ÷`       |
+The board is always 5 × 5; levels tune the times tables and how many squares
+are pre-filled.
 
-Multiplication `×` is part of the game from Level 1 — every early puzzle is
-guaranteed to include at least one `×` equation (up to `9 × 9 = 81`-style
-times tables). Division `÷` joins in on the 9 × 9 boards (Level 10+).
+| Levels | Board  | What you practise                  |
+| ------ | ------ | ---------------------------------- |
+| 1 – 2  | 5 × 5  | times tables, products up to 30    |
+| 3 – 4  | 5 × 5  | products up to 45                  |
+| 5 – 6  | 5 × 5  | products up to 60                  |
+| 7 – 9  | 5 × 5  | products up to 72                  |
+| 10+    | 5 × 5  | the full 1–9 tables (`×` up to 81) |
+
+**Every equation is a multiplication equation** — the whole game is a
+times-table trainer, and higher levels hand you fewer pre-filled numbers.
 
 Progress (level, score, mute setting) is stored in `localStorage`.
 
@@ -80,7 +85,7 @@ The project has **zero dependencies** — no `npm install`, no `node_modules`.
 
 - `npm test` runs every suite with plain Node:
   - `test/gen.test.cjs` – validates 30 levels of generated puzzles (every
-    equation correct, tray tiles match the blanks, levels 1–4 always include `×`),
+    equation correct and a multiplication equation, tray tiles match the blanks),
   - `test/stress.test.cjs` – reliability: 1200 boards, all valid and fast,
   - `test/dom.test.cjs` – optional headless UI playthrough (uses `jsdom`).
     It skips gracefully if you haven't installed jsdom.
@@ -89,10 +94,12 @@ The project has **zero dependencies** — no `npm install`, no `node_modules`.
 
 Each board is a crossword of equations. The generator:
 
-1. picks `k × k` random numbers and operators for the interior of the grid,
-2. derives the right-most column and bottom row from the rows and columns,
-3. searches operators so the bottom-right corner agrees with both its row and
-   its column equation,
+1. fills the interior with random factors from 1 to 9,
+2. multiplies each row and column to derive the right-hand results column and
+   the bottom results row,
+3. resolves the bottom-right corner so it agrees with both its row and its
+   column equation (with multiplication only, both sides are simply the product
+   of every interior number),
 4. locks a few numbers as **givens** and serves the rest back as draggable tiles.
 
 The generator is dependency-free and exports to both browsers and Node, so it

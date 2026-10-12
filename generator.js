@@ -1,13 +1,16 @@
 /*!
  * Math Crossword - puzzle generator
  * Produces crossword-style grid layouts where every row and column is a
- * self-consistent arithmetic equation, e.g.
+ * multiplication equation, e.g.
  *
- *      5  +  3  =  8
- *      +     +     +
- *      4  +  6  =  10
- *      =     =     =
- *      9  +  9  =  18
+ *      1  ×  2  =   2
+ *      ×     ×      ×
+ *      3  ×  4  =  12
+ *      =     =      =
+ *      3  ×  8  =  24
+ *
+ * All equations use multiplication only - the game is built around practising
+ * times tables. Bigger boards chain more factors (a × b = c, a × b × c = d...).
  *
  * Works both in the browser (window.MathCrosswordGenerator) and in Node
  * (module.exports) so the generation logic can be unit tested.
@@ -52,6 +55,16 @@
     return arr;
   }
 
+  /** Build the operator "families" allowed by a configuration. */
+  function operatorFamilies(ops) {
+    const families = [];
+    if (ops.includes("+") || ops.includes("-")) families.push(["+", "-"]);
+    if (ops.includes("*") && ops.includes("/")) families.push(["*", "/"]);
+    else if (ops.includes("*")) families.push(["*"]);
+    else if (ops.includes("/")) families.push(["/"]);
+    return families;
+  }
+
   /**
    * Fold a list of operands left to right, choosing a valid operator at every
    * step. Every equation sticks to a single operator family (additive or
@@ -60,10 +73,7 @@
    * total inside the allowed range.
    */
   function foldRandom(operands, ops, minValue, maxValue) {
-    // Build usable families from the allowed operators
-    const families = [];
-    if (ops.includes("+") || ops.includes("-")) families.push(["+", "-"]);
-    if (ops.includes("*") || ops.includes("/")) families.push(["*", "/"]);
+    const families = operatorFamilies(ops);
     if (!families.length) return null;
 
     for (let attempt = 0; attempt < 6; attempt++) {
@@ -137,10 +147,7 @@
 
     // Homogeneous operator combos (each corner equation keeps one family).
     const pool = [];
-    const families = [];
-    if (ops.includes("+") || ops.includes("-")) families.push(["+", "-"]);
-    if (ops.includes("*") || ops.includes("/")) families.push(["*", "/"]);
-    for (const f of families) pool.push(...opCombos(f, k - 2));
+    for (const f of operatorFamilies(ops)) pool.push(...opCombos(f, k - 2));
 
     for (let i = 0; i < pool.length; i++) {
       const p1 = foldFixed(rowOperands, pool[i], 1, maxRes);
@@ -221,19 +228,10 @@
     const maxN = cfg.maxN || 9;
     const maxRes = cfg.maxRes || Math.max(18, maxN * 2);
     const k = (S + 1) / 2;
-    const requireMult = !!cfg.requireMult;
 
     let solution = null;
-    const maxAttempts = requireMult ? 20000 : 4000;
-    for (let i = 0; i < maxAttempts && !solution; i++) {
-      const s = attempt(k, ops, maxN, maxRes, i);
-      if (!s) continue;
-      // Early levels promise at least one multiplication equation.
-      if (requireMult &&
-          !(s.opsR.some((arr) => arr.includes("*")) || s.opsC.some((arr) => arr.includes("*")))) {
-        continue;
-      }
-      solution = s;
+    for (let i = 0; i < 4000 && !solution; i++) {
+      solution = attempt(k, ops, maxN, maxRes, i);
     }
     if (!solution) return null;
 
@@ -290,18 +288,17 @@
   /** Difficulty settings for a given level. */
   function difficultyForLevel(level) {
     const lv = Math.max(1, level | 0);
-    let S, ops, maxN, maxRes, requireMult = false;
-    if (lv <= 4) {
-      S = 5; ops = ["+", "-", "*"]; maxN = 9; maxRes = 90; requireMult = true;
-    } else if (lv <= 9) {
-      S = 7; ops = ["+", "-", "*"]; maxN = 9; maxRes = 45;
-    } else {
-      S = 9; ops = ["+", "-", "*", "/"]; maxN = 9; maxRes = 72;
-    }
-    const total = ((S + 1) / 2) ** 2;
-    const ratio = lv <= 4 ? 0.34 : lv <= 9 ? 0.28 : 0.24;
-    const givens = Math.max(1, Math.round(total * ratio));
-    return { S, ops, maxN, maxRes, givens, requireMult, level: lv };
+    // The board stays 5 x 5: with multiplication only, the shared bottom-right
+    // corner must equal the product of every interior number, so bigger grids
+    // are not feasible. Difficulty ramps through bigger times tables and fewer
+    // pre-filled squares instead.
+    let maxRes, givens;
+    if (lv <= 2) { maxRes = 30; givens = 4; }        // products up to ~5 x 6
+    else if (lv <= 4) { maxRes = 45; givens = 3; }   // up to ~6 x 7
+    else if (lv <= 6) { maxRes = 60; givens = 3; }   // up to ~8 x 7
+    else if (lv <= 9) { maxRes = 72; givens = 2; }   // up to 9 x 8
+    else { maxRes = 81; givens = 2; }                // the full 1-9 times tables
+    return { S: 5, ops: ["*"], maxN: 9, maxRes, givens, level: lv };
   }
 
   /** Validate a set of placements against the puzzle solution/equations. */

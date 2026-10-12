@@ -1,7 +1,7 @@
 {
   "name": "Math Crossword",
   "short_name": "MathCross",
-  "description": "Fill the grid so every row and column is a correct equation. Drag numbers, solve, level up.",
+  "description": "Times-table crossword: every row and every column is a multiplication equation. Drag the numbers in and master your times tables.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

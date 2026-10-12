@@ -197,19 +197,19 @@ const delay = (ms) => new Promise((r) => setTimeout(r, ms));
   assert(JSON.parse(memoryStore.get("math-crossword-progress-v1")).level === 2, "progress saved");
   dom.window.close();
 
-  // Simulated reload at level 5 -> 7x7 board, persisted score.
+  // Simulated reload at level 5: board stays 5x5, persisted score.
   memoryStore.set("math-crossword-progress-v1", JSON.stringify({ level: 5, score: 500, sound: true }));
   const dom5 = new JSDOM(INDEX, domOpts());
   await delay(180);
-  assert(dom5.window.document.querySelectorAll("#board .cell").length === 49, "reload at level 5 -> 7x7");
+  assert(dom5.window.document.querySelectorAll("#board .cell").length === 25, "reload at level 5 -> 5x5");
   assert(dom5.window.document.getElementById("levelVal").textContent === "5", "level 5 restored");
   assert(dom5.window.document.getElementById("scoreVal").textContent === "500", "score 500 restored");
 
-  // Simulated reload at level 10 -> 9x9 board.
+  // Simulated reload at level 10: board stays 5x5 (harder times tables).
   memoryStore.set("math-crossword-progress-v1", JSON.stringify({ level: 10, score: 0, sound: true }));
   const dom10 = new JSDOM(INDEX, domOpts());
   await delay(180);
-  assert(dom10.window.document.querySelectorAll("#board .cell").length === 81, "reload at level 10 -> 9x9");
+  assert(dom10.window.document.querySelectorAll("#board .cell").length === 25, "reload at level 10 -> 5x5");
 
   dom5.window.close();
   dom10.window.close();

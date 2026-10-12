@@ -50,10 +50,10 @@ for (let level = 1; level <= 30; level++) {
     }
   }
 
-  // Levels 1-4 promise at least one multiplication equation.
-  if (level <= 4 && !p.equations.some((eq) => eq.ops.includes("*"))) {
+  // Every equation must use multiplication only (the game is a times-table puzzle).
+  if (!p.equations.every((eq) => eq.ops.length > 0 && eq.ops.every((o) => o === "*"))) {
     failures++;
-    console.log("LEVEL " + level + " has no multiplication equation");
+    console.log("LEVEL " + level + " has a non-multiplication equation");
   }
 }
 
