@@ -13,6 +13,20 @@ column forms a correct equation** — just like the classic Math Crossword.
 Open [`index.html`](./index.html) in any modern browser — no server or build
 step needed. It also works great on phones and tablets (touch drag supported).
 
+## Install as an app (PWA)
+
+This game is a full-screen **Progressive Web App**:
+
+- **Installable** — on your phone or desktop, pick *Add to Home screen* /
+  *Install app* from the browser menu. It then opens **full screen** (no
+  browser chrome) with a **theme-colored status bar**, just like a native app.
+- **Works offline** — once loaded, the game keeps working with no connection;
+  a service worker caches everything it needs (`sw.js`).
+- The app details (name, colors, icons, full-screen mode) live in
+  [`manifest.webmanifest`](./manifest.webmanifest). No build step.
+
+> Installability needs HTTPS — GitHub Pages already provides that.
+
 ## How to play
 
 - Each **row** and each **column** of the grid is an arithmetic equation.
