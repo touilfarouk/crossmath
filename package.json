@@ -1,0 +1,9 @@
+{
+  "name": "math-crossword",
+  "version": "1.0.0",
+  "description": "Math Crossword — fill the grid so every row and column is a correct equation. Zero dependencies, static files only.",
+  "private": true,
+  "scripts": {
+    "test": "node test/gen.test.cjs && node test/stress.test.cjs && node test/dom.test.cjs"
+  }
+}

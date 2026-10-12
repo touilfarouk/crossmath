@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Math Crossword — Fill the equations!</title>
+  <meta name="description" content="Math Crossword puzzle game. Solve the arithmetic equations by dragging the correct numbers into the grid. Free, no install, works on any device.">
+  <meta name="theme-color" content="#3a1c71">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233a1c71'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23fff'%3E%E2%9C%95%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">×</div>
+        <div class="brand-text">
+          <h1>Math Crossword</h1>
+          <p class="tagline">Drag the numbers · complete every equation</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Level</span><span id="levelVal" class="stat-value">1</span></div>
+        <div class="stat"><span class="stat-label">Score</span><span id="scoreVal" class="stat-value">0</span></div>
+        <div class="stat"><span class="stat-label">Time</span><span id="timeVal" class="stat-value">0:00</span></div>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div class="board-shell">
+        <div id="board" class="board" role="grid" aria-label="Math crossword board"></div>
+      </div>
+
+      <section class="panel panel-tray" aria-label="Number tiles">
+        <div class="panel-head">
+          <h2>Numbers</h2>
+          <span id="trayCount" class="pill"></span>
+        </div>
+        <p class="hint-line" id="trayHint">Drag each number onto the board, or tap a tile then tap a square.</p>
+        <div id="tray" class="tray"></div>
+      </section>
+    </main>
+
+    <footer class="toolbar" role="toolbar" aria-label="Game controls">
+      <button id="btnHint" class="btn btn-soft" title="Reveal one correct number">
+        <span class="btn-icon">💡</span><span class="btn-label">Hint</span>
+      </button>
+      <button id="btnCheck" class="btn btn-soft" title="Check your answers">
+        <span class="btn-icon">✓</span><span class="btn-label">Check</span>
+      </button>
+      <button id="btnClear" class="btn btn-soft" title="Clear the board">
+        <span class="btn-icon">⌫</span><span class="btn-label">Clear</span>
+      </button>
+      <button id="btnNew" class="btn btn-primary" title="Generate a new puzzle">
+        <span class="btn-icon">⟳</span><span class="btn-label">New</span>
+      </button>
+      <button id="btnSound" class="btn btn-soft" title="Toggle sound" aria-pressed="true">
+        <span class="btn-icon" id="soundIcon">🔊</span><span class="btn-label" id="soundLabel">Sound</span>
+      </button>
+      <button id="btnHelp" class="btn btn-soft" title="How to play">
+        <span class="btn-icon">?</span><span class="btn-label">How&nbsp;to&nbsp;Play</span>
+      </button>
+    </footer>
+  </div>
+
+  <!-- Help modal -->
+  <div id="helpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+    <div class="modal-card">
+      <button class="modal-close" id="helpClose" aria-label="Close">✕</button>
+      <h2 id="helpTitle">How to Play</h2>
+      <p>Every row and every column of the grid is a math equation.</p>
+      <ul>
+        <li><strong>Drag the numbers</strong> from the tray into the empty squares.</li>
+        <li>Work left to right — what you fill in must make every equation true.</li>
+        <li>Numbers are shared where rows and columns <strong>cross</strong>, so one wrong pick can affect two equations.</li>
+        <li>Tap a filled square to take a number back, or just drag it somewhere else.</li>
+      </ul>
+      <p class="tip">Stuck? Use <strong>Hint</strong> to reveal one correct number, or <strong>Check</strong> to mark mistakes.</p>
+      <button class="btn btn-primary btn-block" id="helpGotIt">Got it!</button>
+    </div>
+  </div>
+
+  <!-- Win modal -->
+  <div id="winModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="winTitle" hidden>
+    <div class="modal-card win-card">
+      <div class="win-badge" aria-hidden="true">🎉</div>
+      <h2 id="winTitle">Level complete!</h2>
+      <p id="winMsg">All equations are solved.</p>
+      <div class="win-stats" id="winStats"></div>
+      <div class="win-actions">
+        <button id="winNext" class="btn btn-primary">Next level →</button>
+        <button id="winReplay" class="btn btn-soft">Replay</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="generator.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
